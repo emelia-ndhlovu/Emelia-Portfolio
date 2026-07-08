@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Emelia Ndhlovu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="grid-bg" aria-hidden="true"></div>
+
+<header>
+  <div class="nav">
+    <a href="index.html" class="brand"><span class="mark"></span>EMELIA NDHLOVU</a>
+    <nav class="links">
+      <a href="index.html">Home</a>
+      <a href="projects.html">Projects</a>
+      <a href="background.html">Background</a>
+      <a href="contact.html" class="active">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="wrap page-header">
+    <h1 class="page-title">Contact</h1>
+    <p class="page-lede">Actively seeking a structured graduate engineering programme. Send a message below, or reach out directly — tap any field to copy it.</p>
+  </section>
+
+  <section class="wrap">
+    <div class="contact-layout">
+
+      <div>
+        <div class="sheet-label">
+          <span class="tag">DIRECT</span>
+          <span class="rule"></span>
+          <span class="num">CONTACT DETAILS</span>
+        </div>
+        <div class="contact-cards">
+          <div class="contact-card">
+            <div><span class="k">Email</span><span class="v">gamuendhlovu@gmail.com</span></div>
+            <button class="copy-btn" data-copy="gamuendhlovu@gmail.com">Copy</button>
+          </div>
+          <div class="contact-card">
+            <div><span class="k">Phone (Primary)</span><span class="v">+27 69 558 2097</span></div>
+            <button class="copy-btn" data-copy="+27695582097">Copy</button>
+          </div>
+          <div class="contact-card">
+            <div><span class="k">Phone (Alternate)</span><span class="v">+27 82 590 2063</span></div>
+            <button class="copy-btn" data-copy="+27825902063">Copy</button>
+          </div>
+          <div class="contact-card">
+            <div><span class="k">Location</span><span class="v">11 Goring Avenue, Melville, Johannesburg</span></div>
+            <button class="copy-btn" data-copy="11 Goring Avenue, Melville, Johannesburg, South Africa">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="sheet-label">
+          <span class="tag">MESSAGE</span>
+          <span class="rule"></span>
+          <span class="num">SEND DIRECTLY</span>
+        </div>
+        <div class="form-card">
+          <div class="corner-ticks"><span></span><span></span><span></span><span></span></div>
+          <form id="contact-form">
+            <div class="form-field">
+              <label for="name">Your Name</label>
+              <input type="text" id="name" required>
+            </div>
+            <div class="form-field">
+              <label for="email">Your Email</label>
+              <input type="email" id="email" required>
+            </div>
+            <div class="form-field">
+              <label for="message">Message</label>
+              <textarea id="message" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">Send Message →</button>
+          </form>
+          <p class="form-note">This opens your email app with the message pre-filled, addressed to gamuendhlovu@gmail.com.</p>
+          <p class="form-status" id="form-status">Opening your email app…</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  © 2026 Emelia Ndhlovu — Johannesburg, South Africa.
+</footer>
+
+<script>
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const text = btn.dataset.copy;
+      try{
+        await navigator.clipboard.writeText(text);
+      }catch(e){
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta);
+      }
+      const original = btn.textContent;
+      btn.textContent = 'Copied ✓';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 1800);
+    });
+  });
+
+  document.getElementById('contact-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const message = document.getElementById('message').value;
+    const subject = encodeURIComponent('Portfolio contact from ' + name);
+    const body = encodeURIComponent(message + '\n\n— ' + name + ' (' + email + ')');
+    window.location.href = 'mailto:gamuendhlovu@gmail.com?subject=' + subject + '&body=' + body;
+    const status = document.getElementById('form-status');
+    status.classList.add('show');
+    setTimeout(() => status.classList.remove('show'), 4000);
+  });
+</script>
+
+</body>
+</html>
