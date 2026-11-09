@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="A software-first ESP32 energy manager modelling solar PV, battery storage and grid backup. Phase 0 system specification by Emelia Ndhlovu.">
+<title>Dual-Source Energy Manager — Emelia Ndhlovu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../style.css">
+<style>
+.project-hero{padding-top:72px;padding-bottom:32px}
+.project-kicker{font-family:'IBM Plex Mono',monospace;color:var(--cyan);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase}
+.project-lede{max-width:72ch;color:var(--text-dim);font-size:1.05rem;margin-top:18px}
+.status-line{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:24px}
+.status-pill{font: .72rem 'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--brass);border:1px solid var(--brass);padding:5px 9px}
+.project-section{padding-top:44px;padding-bottom:44px}
+.project-detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.metric{background:var(--panel);border:1px solid var(--line);padding:20px}
+.metric .k{display:block;color:var(--text-faint);font: .68rem 'IBM Plex Mono',monospace;letter-spacing:.07em;text-transform:uppercase}
+.metric .v{display:block;color:var(--cyan);font:600 1.65rem 'Space Grotesk',sans-serif;margin-top:8px}
+.metric .note{display:block;color:var(--text-dim);font-size:.82rem;margin-top:4px}
+.detail-columns{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.detail-panel{border:1px solid var(--line);background:var(--panel);padding:24px}
+.detail-panel h3{font-size:1.08rem;margin-bottom:12px}
+.detail-panel p,.detail-panel li{color:var(--text-dim);font-size:.93rem}
+.detail-panel ul{padding-left:20px;margin:10px 0 0}
+.detail-panel li{margin:7px 0}
+.energy-flow{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}
+.energy-node{border:1px solid var(--line);background:var(--panel-2);padding:15px;text-align:center}
+.energy-node strong{display:block;font-family:'Space Grotesk',sans-serif;font-size:1rem}
+.energy-node span{display:block;color:var(--text-faint);font: .68rem 'IBM Plex Mono',monospace;margin-top:5px}
+.phase-note{border-left:2px solid var(--brass);background:var(--panel);padding:16px 18px;color:var(--text-dim);font-size:.9rem;margin-top:22px}
+.project-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.project-actions .btn{cursor:pointer}
+@media(max-width:760px){.project-detail-grid,.detail-columns{grid-template-columns:1fr}.energy-flow{grid-template-columns:1fr}.project-hero{padding-top:52px}}
+</style>
+</head>
+<body>
+<div class="grid-bg" aria-hidden="true"></div>
+<header>
+  <div class="nav">
+    <a href="../../index.html" class="brand"><span class="mark"></span>EMELIA NDHLOVU</a>
+    <nav class="links">
+      <a href="../../index.html">Home</a>
+      <a href="../../projects.html" class="active">Projects</a>
+      <a href="../../background.html">Background</a>
+      <a href="../../contact.html">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="wrap project-hero">
+    <span class="project-kicker">Embedded Systems · Renewable Energy · IoT</span>
+    <h1 class="page-title" style="margin-top:12px;">Dual-Source Energy Manager</h1>
+    <p class="project-lede">A software-first extension of my final-year hybrid solar/grid power system. The aim is to model how a PV array, battery and grid can work together, then make the energy flows visible through a dashboard served by an ESP32.</p>
+    <div class="status-line">
+      <span class="status-pill">Phase 0 · System definition</span>
+      <span class="meta">Design in progress · Firmware not yet written</span>
+    </div>
+    <div class="project-actions">
+      <a class="btn btn-primary" href="README.md">Project README ↗</a>
+      <a class="btn btn-ghost" href="docs/SYSTEM_SPEC.md">System specification ↗</a>
+      <a class="btn btn-ghost" href="../../projects.html">← Back to projects</a>
+    </div>
+  </section>
+
+  <section class="wrap project-section">
+    <div class="sheet-label">
+      <span class="tag">01</span><span class="rule"></span><span class="num">SYSTEM BASELINE</span>
+    </div>
+    <div class="project-detail-grid">
+      <div class="metric"><span class="k">PV array model</span><span class="v">500 W</span><span class="note">Illustrative array rating</span></div>
+      <div class="metric"><span class="k">Battery model</span><span class="v">1.5 kWh</span><span class="note">1,200 Wh usable between 20–100% SoC</span></div>
+      <div class="metric"><span class="k">Simulation step</span><span class="v">15 min</span><span class="note">96 model steps in a 24-hour day</span></div>
+    </div>
+    <div class="phase-note"><strong>Simulation disclosure:</strong> This project is currently a design-stage software model. PV output, load, battery behaviour, state of charge and source selection will be simulated. No live electrical sensors or real power switching are implemented at this stage.</div>
+  </section>
+
+  <section class="wrap project-section">
+    <div class="sheet-label">
+      <span class="tag">02</span><span class="rule"></span><span class="num">ENERGY MANAGEMENT CONCEPT</span>
+    </div>
+    <div class="detail-panel">
+      <p>The planned controller will calculate the available solar power and compare it with the modelled load. It will use the battery to cover a solar deficit while the battery remains above its reserve threshold. The grid will supply any remaining demand.</p>
+      <div class="energy-flow" aria-label="Source priority: solar, battery, grid">
+        <div class="energy-node"><strong style="color:var(--brass)">01 · Solar</strong><span>Serve load first</span></div>
+        <div class="energy-node"><strong style="color:var(--cyan)">02 · Battery</strong><span>Cover shortfall</span></div>
+        <div class="energy-node"><strong>03 · Grid</strong><span>Meet remaining demand</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap project-section">
+    <div class="sheet-label">
+      <span class="tag">03</span><span class="rule"></span><span class="num">DESIGN ASSUMPTIONS</span>
+    </div>
+    <div class="detail-columns">
+      <div class="detail-panel">
+        <h3>Model parameters</h3>
+        <ul>
+          <li>PV array rating: 500 W, with a 0.80 performance factor.</li>
+          <li>Battery nominal capacity: 1,500 Wh.</li>
+          <li>Battery state-of-charge window: 20–100%, initially 60%.</li>
+          <li>Charge and discharge efficiency: 95% each.</li>
+          <li>Battery charge/discharge power limit: 300 W.</li>
+          <li>Illustrative daily load: 1.88 kWh, with a 150 W peak.</li>
+        </ul>
+      </div>
+      <div class="detail-panel">
+        <h3>Planned implementation</h3>
+        <ul>
+          <li>ESP32 reads hourly solar-radiation and weather forecast data.</li>
+          <li>Energy model advances in 15-minute steps.</li>
+          <li>ESP32 hosts a responsive local dashboard.</li>
+          <li>RGB LED indicates the modelled active source, where supported by the board.</li>
+          <li>Optional ThingSpeak logging for selected summary values.</li>
+          <li>Sensor adapter functions keep model inputs replaceable by future hardware readings.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap project-section">
+    <div class="sheet-label">
+      <span class="tag">04</span><span class="rule"></span><span class="num">ROADMAP</span>
+    </div>
+    <div class="detail-panel">
+      <ul>
+        <li><strong>Phase 0 · System definition:</strong> establish parameters, load profile and plain-English control rules.</li>
+        <li><strong>Phase 1 · Model:</strong> implement and test PV, load, battery and source-allocation calculations.</li>
+        <li><strong>Phase 2 · Weather data:</strong> connect and validate the forecast-data adapter.</li>
+        <li><strong>Phase 3 · Dashboard:</strong> serve live model outputs from the ESP32.</li>
+        <li><strong>Phase 4 · Telemetry:</strong> add optional cloud logging and board-specific RGB status.</li>
+        <li><strong>Phase 5 · Sensor-ready upgrade:</strong> replace selected simulated readings with hardware measurements and validate the design safely.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="wrap project-section">
+    <div class="sheet-label">
+      <span class="tag">05</span><span class="rule"></span><span class="num">DATA &amp; SAFETY NOTES</span>
+    </div>
+    <div class="detail-panel">
+      <p>Weather data is planned from the <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo API</a>. The free API is subject to non-commercial-use terms; confirm permission before using a live feed in a public portfolio. Where data is displayed, attribution will be provided as required.</p>
+      <p>This is an educational simulation, not a certified energy controller. It must not be connected to or used to switch real grid, inverter, battery or mains circuits. A future hardware stage requires appropriate protection, isolation, certified equipment and qualified electrical review.</p>
+      <p>An INA219 can measure voltage and current; it does not directly measure battery state of charge. A later implementation would estimate SoC from measured current and a battery model.</p>
+    </div>
+  </section>
+</main>
+<footer>© 2026 Emelia Ndhlovu — Johannesburg, South Africa.</footer>
+</body>
+</html>
